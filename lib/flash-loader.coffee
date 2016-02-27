@@ -2,6 +2,7 @@
 {join} = require 'path'
 fs = require 'fs'
 
+log = console.log.bind console, '[INFO] %s'
 error = console.error.bind console, '[ERROR] %s'
 
 PLATFORM = process.platform
@@ -96,7 +97,7 @@ getPath = (loc) ->
         errMsg = 'Could not load system Pepper Flash Player plug-in'
       else
         flashPath = loc if validatePath loc
-        errMsg = "Invalid path to '#{FILENAME}': \n#{loc}"
+        errMsg = "Could not load '#{FILENAME}' from: \n#{loc}"
   else
     for loc in flashSources
       flashPath = getPath loc
@@ -107,8 +108,7 @@ getPath = (loc) ->
 load = ->
   flashPath = getPath()
   if flashPath?
-    dbg.ex.flashLoader?.log "Loading Pepper Flash Player from:"
-    dbg.ex.flashLoader?.log flashPath
+    log "Loading Pepper Flash Player from: \n#{flashPath}"
     app.commandLine.appendSwitch 'ppapi-flash-path', flashPath
     # Note: the 'ppapi-flash-version' switch is used by Google Chrome to decide
     # which flash player to load (it'll choose the newest one), and dioplay in

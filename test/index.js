@@ -13,6 +13,7 @@ var ppapi_flash_path = path.join(__dirname, flashLoader.FLASH_PLAYER_FILENAME);
 flashLoader.addSource(ppapi_flash_path);
 flashLoader.addSource('@chrome');
 flashLoader.addSource('@system');
+flashLoader.load();
 
 app.on('ready', function() {
   mainWindow = new BrowserWindow({
