@@ -1,14 +1,14 @@
 {app} = require 'electron'
-{join} = require 'path-extra'
-fs = require 'fs-extra'
-{error} = require './utils'
+{join} = require 'path'
+fs = require 'fs'
+
+error = console.error.bind console, '[ERROR] %s'
 
 PLATFORM = process.platform
 FILENAME = switch PLATFORM
   when 'darwin' then 'PepperFlashPlayer.plugin'
   when 'linux'  then 'libpepflashplayer.so'
   when 'win32'  then 'pepflashplayer.dll'
-INNER_PATH = join 'PepperFlash', PLATFORM, FILENAME
 
 validatePath = (path) ->
   return false if typeof path isnt 'string' or not path.endsWith FILENAME
@@ -17,11 +17,6 @@ validatePath = (path) ->
   catch
     return false
   true
-
-getBuiltInFlashPath = ->
-  builtInPath = join EXECROOT, INNER_PATH if EXECROOT?
-  builtInPath = join ROOT, INNER_PATH if not validatePath builtInPath
-  if validatePath builtInPath then builtInPath else null
 
 reVerNum = /(\d+)\.(\d+)\.(\d+)\.(\d+)/
 getNewerVersion = (ver1, ver2) ->
@@ -79,64 +74,38 @@ getFlashVersion = (path) ->
     else ''
 
 class FlashPlayerVersions
-  constructor: (builtInFlashPath, chromeFlashPath, systemFlashPath) ->
-    @builtin = getFlashVersion builtInFlashPath if builtInFlashPath?
+  constructor: (chromeFlashPath, systemFlashPath) ->
     @chrome = getFlashVersion chromeFlashPath if chromeFlashPath?
     @system = getFlashVersion systemFlashPath if systemFlashPath?
 
 getAllVersions = ->
-  new FlashPlayerVersions getBuiltInFlashPath(), findChromeFlashPath(), findSystemFlashPath()
+  new FlashPlayerVersions findChromeFlashPath(), findSystemFlashPath()
 
-useFlashLoc = 'auto'
-CLIFlashPath = ''
-reCLIArg = /^--flash=(.+)$/i
-parseCLIArg = (arg) ->
-  if (m = reCLIArg.exec arg)?
-    value = m[1]
-    if value.startsWith '@'
-      useFlashLoc = value.slice 1
-    else
-      useFlashLoc = 'cli'
-      CLIFlashPath = value
-  m?
+flashSources = []
+addSource = (location) ->
+  flashSources.push location
 
-getPath = (loc = 'auto') ->
-  # The order of detecting Pepper Flash Player:
-  # 1. If '@builtin'/'@chrome'/'@system'/[a file path] is passed from CLI,
-  #    try to find flash player from the specified location.
-  # 2. If 1 failed, or '@auto' or nothing is passed from CLI (i.e., auto-detection),
-  #    try to find built-in flash player.
-  # 3. If 2 failed, try to find Google Chrome integrated flash player.
-  # 4. If 3 failed, try to find globally installed flash player.
-  switch loc.toLowerCase()
-    when 'auto'
-      flashPath = getBuiltInFlashPath()
-      flashPath ?= findChromeFlashPath()
-      flashPath ?= findSystemFlashPath()
-      error 'No installed Pepper Flash Player found' if not flashPath?
-      return flashPath
-    when 'builtin'
-      flashPath = getBuiltInFlashPath()
-      errMsg = 'Could not load built-in Pepper Flash Player'
-    when 'chrome'
-      flashPath = findChromeFlashPath()
-      errMsg = 'Could not load Chrome Pepper Flash Player'
-    when 'system'
-      flashPath = findSystemFlashPath()
-      errMsg = 'Could not load system Pepper Flash Player plug-in'
-    when 'cli'
-      flashPath = CLIFlashPath if validatePath CLIFlashPath
-      errMsg = "Invalid path to '#{FILENAME}': \n#{CLIFlashPath}"
-    else
-      errMsg = "Invalid Pepper Flash Player location: '@#{loc}'."
-  if not flashPath?
-    error errMsg
-    dbg.ex.flashLoader?.log 'Falling back to auto-detection'
-    flashPath = getPath()
+getPath = (loc) ->
+  if loc?
+    switch loc.toLowerCase()
+      when '@chrome'
+        flashPath = findChromeFlashPath()
+        errMsg = 'Could not load Chrome Pepper Flash Player'
+      when '@system'
+        flashPath = findSystemFlashPath()
+        errMsg = 'Could not load system Pepper Flash Player plug-in'
+      else
+        flashPath = loc if validatePath loc
+        errMsg = "Invalid path to '#{FILENAME}': \n#{loc}"
+  else
+    for loc in flashSources
+      flashPath = getPath loc
+      break if flashPath?
+  error errMsg if errMsg? and not flashPath?
   flashPath
 
 load = ->
-  flashPath = getPath useFlashLoc
+  flashPath = getPath()
   if flashPath?
     dbg.ex.flashLoader?.log "Loading Pepper Flash Player from:"
     dbg.ex.flashLoader?.log flashPath
@@ -147,8 +116,9 @@ load = ->
     # But it's useless here, so we just ignore it.
 
 if process.type is 'browser'
-  exports.parseCLIArg = parseCLIArg
+  exports.addSource = addSource
   exports.load = load
 
+exports.FLASH_PLAYER_FILENAME = FILENAME
 exports.getFlashVersion = getFlashVersion
 exports.getAllVersions = getAllVersions
