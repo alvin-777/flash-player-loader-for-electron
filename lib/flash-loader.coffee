@@ -2,8 +2,21 @@
 {join} = require 'path'
 fs = require 'fs'
 
-log = console.log.bind console, '[INFO] %s'
-error = console.error.bind console, '[ERROR] %s'
+doNothing = ->
+log = doNothing
+error = doNothing
+
+debugMode = false
+debug = (b = true, logFunc, errFunc) ->
+  debugMode = b
+  if debugMode
+    log = logFunc
+    log ?= console.log.bind console
+    error = errFunc
+    error ?= console.error.bind console
+    log 'Debugging Flash Loader'
+  else
+    log = error = doNothing
 
 PLATFORM = process.platform
 FILENAME = switch PLATFORM
@@ -120,6 +133,7 @@ if process.type is 'browser'
   exports.addSource = addSource
   exports.load = load
 
+exports.debug = debug
 exports.FLASH_PLAYER_FILENAME = FILENAME
 exports.getFlashVersion = getFlashVersion
 exports.getAllVersions = getAllVersions
