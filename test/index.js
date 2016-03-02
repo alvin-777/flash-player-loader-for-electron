@@ -1,7 +1,7 @@
 var app = require('electron').app;
 var BrowserWindow = require('electron').BrowserWindow;
 var path = require('path');
-var flashLoader = require('..');
+require('colors');
 
 var mainWindow = null;
 
@@ -9,7 +9,11 @@ app.on('window-all-closed', function() {
   app.quit();
 });
 
+var flashLoader = require('..');
 var ppapi_flash_path = path.join(__dirname, flashLoader.FLASH_PLAYER_FILENAME);
+flashLoader.debug(true,
+  console.log.bind(console, '[INFO] %s'.cyan),
+  console.error.bind(console, '[ERROR] %s'.bold.red));
 flashLoader.addSource(ppapi_flash_path);
 flashLoader.addSource('@chrome');
 flashLoader.addSource('@system');
