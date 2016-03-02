@@ -28,6 +28,7 @@ getNewerVersion = (ver1, ver2) ->
   for i in [1..4]
     continue if v1[i] == v2[i]
     return if parseInt(v1[i]) > parseInt(v2[i]) then ver1 else ver2
+  ver1 # Exactly the same version
 
 findChromeFlashPath = ->
   # Refer to: https://helpx.adobe.com/flash-player/kb/flash-player-google-chrome.html
