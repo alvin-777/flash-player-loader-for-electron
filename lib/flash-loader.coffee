@@ -10,10 +10,14 @@ debugMode = false
 debug = (b = true, logFunc, errFunc) ->
   debugMode = b
   if debugMode
-    log = logFunc
-    log ?= console.log.bind console
-    error = errFunc
-    error ?= console.error.bind console
+    if typeof logFunc is 'function'
+      log = error = logFunc
+    else
+      log = console.log.bind console
+    if typeof errFunc is 'function'
+      error = logFunc
+    else
+      error = console.error.bind console
     log 'Debugging Flash Loader'
   else
     log = error = doNothing
