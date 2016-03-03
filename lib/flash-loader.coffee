@@ -76,8 +76,12 @@ findSystemFlashPath = ->
         null
     else null
 
-getFlashVersion = (path) ->
-  dbg.ex.flashLoader?.assert path, 'No flash player path passed in!'
+getFlashVersion = (loc) ->
+  return '' if typeof loc isnt 'string'
+  path = switch loc.toLowerCase()
+    when '@chrome' then findChromeFlashPath()
+    when '@system' then findSystemFlashPath()
+    else loc
   return '' if not validatePath path
   switch PLATFORM
     when 'darwin'
@@ -87,14 +91,6 @@ getFlashVersion = (path) ->
       match = /<key>CFBundleVersion<\/key>\s*<string>(\d+(?:\.\d+)*)<\/string>/.exec plistContent
       if match and match.length > 1 then match[1] else ''
     else ''
-
-class FlashPlayerVersions
-  constructor: (chromeFlashPath, systemFlashPath) ->
-    @chrome = getFlashVersion chromeFlashPath if chromeFlashPath?
-    @system = getFlashVersion systemFlashPath if systemFlashPath?
-
-getAllVersions = ->
-  new FlashPlayerVersions findChromeFlashPath(), findSystemFlashPath()
 
 flashSources = []
 addSource = (location) ->
@@ -123,6 +119,7 @@ load = ->
   flashPath = getPath()
   if flashPath?
     log "Loading Pepper Flash Player from: \n#{flashPath}"
+    log "Pepper Flash Player version: #{getFlashVersion flashPath}" if PLATFORM is 'darwin'
     app.commandLine.appendSwitch 'ppapi-flash-path', flashPath
     # Note: the 'ppapi-flash-version' switch is used by Google Chrome to decide
     # which flash player to load (it'll choose the newest one), and dioplay in
@@ -135,5 +132,4 @@ if process.type is 'browser'
 
 exports.debug = debug
 exports.FLASH_PLAYER_FILENAME = FILENAME
-exports.getFlashVersion = getFlashVersion
-exports.getAllVersions = getAllVersions
+exports.getVersion = getFlashVersion
