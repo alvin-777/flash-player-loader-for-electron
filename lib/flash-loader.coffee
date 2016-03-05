@@ -15,9 +15,9 @@ debug = (b = true, logFunc, errFunc) ->
     else
       log = console.log.bind console
     if typeof errFunc is 'function'
-      error = logFunc
+      error = errFunc
     else
-      error = console.error.bind console
+      error ?= console.error.bind console
     log 'Debugging Flash Loader'
   else
     log = error = doNothing
