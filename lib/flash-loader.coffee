@@ -133,11 +133,12 @@ load = ->
     log "Loading Pepper Flash Player from: \n#{flashPath}"
     app.commandLine.appendSwitch 'ppapi-flash-path', flashPath
     # Note: the 'ppapi-flash-version' switch is used by Google Chrome to decide
-    # which flash player to load (it'll choose the newest one), and dioplay in
+    # which flash player to load (it'll choose the newest one), and display in
     # the 'chrome://version', 'chrome://plugins', 'chrome://flash' pages.
-    # But it's useless here, so we just ignore it.
-    if PLATFORM is 'darwin' or flashSources[usingIndex].ver?
-      ver = if PLATFORM is 'darwin' then getFlashVersion flashPath else flashSources[usingIndex].ver
+    # However, for (most) electron apps, it's useless. It's safe to ignore it.
+    ver = getFlashVersion flashPath
+    ver = flashSources[usingIndex].ver if not ver
+    if ver
       log "Pepper Flash Player version: #{ver}"
       app.commandLine.appendSwitch 'ppapi-flash-version', ver
 
