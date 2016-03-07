@@ -97,8 +97,15 @@ getFlashVersion = (loc) ->
     else ''
 
 flashSources = []
-addSource = (location) ->
-  flashSources.push location
+usingIndex = -1
+addSource = (location, version) ->
+  o = loc: location
+  if version?
+    if typeof version is 'string' and reVerNum.test version
+      o.ver = version
+    else
+      error "Invalid version string for #{location}: #{version}"
+  flashSources.push o
 
 getPath = (loc) ->
   if loc?
@@ -113,8 +120,9 @@ getPath = (loc) ->
         flashPath = loc if validatePath loc
         errMsg = "Could not load '#{FILENAME}' from: \n#{loc}"
   else
-    for loc in flashSources
-      flashPath = getPath loc
+    for src, i in flashSources
+      flashPath = getPath src.loc
+      usingIndex = i
       break if flashPath?
   error errMsg if errMsg? and not flashPath?
   flashPath
@@ -123,12 +131,15 @@ load = ->
   flashPath = getPath()
   if flashPath?
     log "Loading Pepper Flash Player from: \n#{flashPath}"
-    log "Pepper Flash Player version: #{getFlashVersion flashPath}" if PLATFORM is 'darwin'
     app.commandLine.appendSwitch 'ppapi-flash-path', flashPath
     # Note: the 'ppapi-flash-version' switch is used by Google Chrome to decide
     # which flash player to load (it'll choose the newest one), and dioplay in
     # the 'chrome://version', 'chrome://plugins', 'chrome://flash' pages.
     # But it's useless here, so we just ignore it.
+    if PLATFORM is 'darwin' or flashSources[usingIndex].ver?
+      ver = if PLATFORM is 'darwin' then getFlashVersion flashPath else flashSources[usingIndex].ver
+      log "Pepper Flash Player version: #{ver}"
+      app.commandLine.appendSwitch 'ppapi-flash-version', ver
 
 if process.type is 'browser'
   exports.addSource = addSource
