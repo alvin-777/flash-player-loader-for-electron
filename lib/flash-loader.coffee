@@ -147,5 +147,5 @@ if process.type is 'browser'
   exports.load = load
 
 exports.debug = debug
-exports.FLASH_PLAYER_FILENAME = FILENAME
+exports.getFilename = () -> FILENAME
 exports.getVersion = getFlashVersion
