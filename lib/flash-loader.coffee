@@ -120,6 +120,7 @@ getPath = (loc) ->
         flashPath = loc if validatePath loc
         errMsg = "Could not load '#{FILENAME}' from: \n#{loc}"
   else
+    errMsg = 'No source has been added. Please call `addSource()` to add the location where Flash Player can be found.'
     for src, i in flashSources
       flashPath = getPath src.loc
       usingIndex = i
