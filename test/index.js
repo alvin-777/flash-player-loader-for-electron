@@ -10,7 +10,7 @@ app.on('window-all-closed', function() {
 });
 
 var flashLoader = require('..');
-flashLoader.debug(true,
+flashLoader.debug(
   console.log.bind(console, '[INFO] %s'.cyan),
   console.error.bind(console, '[ERROR] %s'.bold.red));
 var ppapi_flash_path = path.join(__dirname, flashLoader.getFilename());

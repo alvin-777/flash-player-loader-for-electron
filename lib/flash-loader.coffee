@@ -6,21 +6,14 @@ doNothing = ->
 log = doNothing
 error = doNothing
 
-debugMode = false
-debug = (b = true, logFunc, errFunc) ->
-  debugMode = b
-  if debugMode
-    if typeof logFunc is 'function'
-      log = error = logFunc
-    else
-      log = console.log.bind console
-    if typeof errFunc is 'function'
-      error = errFunc
-    else
-      error ?= console.error.bind console
-    log 'Debugging Flash Loader'
+debug = (logFunc, errFunc) ->
+  if typeof logFunc is 'function'
+    log = error = logFunc
   else
-    log = error = doNothing
+    log = console.log.bind console
+    error = console.error.bind console
+  error = errFunc if typeof errFunc is 'function'
+  log 'Debugging Flash Loader'
 
 PLATFORM = process.platform
 FILENAME = switch PLATFORM
