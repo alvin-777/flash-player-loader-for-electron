@@ -29,13 +29,16 @@ Returns the Flash Player filename according to the running OS.
 * `location` String
 * `version` String (optional)
 
-Adds the location of Flash Player.
+Adds the location of Pepper Flash Player.
 
-The `location` is basically the _path to the Pepper Flash Player file_.  
+The `location` is the _path to the **directory** contains the Pepper Flash Player file_,
+or the _full path to the Pepper Flash Player file_
+(The filename has to match the string returned by `getFilename()`).  
 On **_OS X_**, you can also specify `"@chrome"` or `"@system"` for `location`.   
 If `"@chrome"` is specified, it will automatically look for the Flash Player
 integrated by the newest installed Google Chrome.  
-If `"@system"` is specified, it will look for the globally installed Pepper Flash Player.
+If `"@system"` is specified, it will look for the
+[Pepper Flash Player system plug-in](https://get.adobe.com/flashplayer/?fpchrome).
 
 You can optionally pass in a version string, which will be passed to
 [Chromium](http://www.chromium.org) with the `ppapi-flash-version` switch.  

@@ -13,7 +13,7 @@ var flashLoader = require('..');
 flashLoader.debug(
   console.log.bind(console, '[INFO] %s'.cyan),
   console.error.bind(console, '[ERROR] %s'.bold.red));
-var ppapi_flash_path = path.join(__dirname, flashLoader.getFilename());
+var ppapi_flash_path = path.join(__dirname);
 flashLoader.addSource(ppapi_flash_path, '1.2.3.4');
 flashLoader.addSource('@chrome');
 flashLoader.addSource('@system');

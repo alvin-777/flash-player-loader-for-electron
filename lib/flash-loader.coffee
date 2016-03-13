@@ -21,13 +21,20 @@ FILENAME = switch PLATFORM
   when 'linux'  then 'libpepflashplayer.so'
   when 'win32'  then 'pepflashplayer.dll'
 
+# `path`  can be the full path to the file,
+#         or the path to the dir contains the file.
+# Returns the validated path string, or null if `path` is not valid.
 validatePath = (path) ->
-  return false if typeof path isnt 'string' or not path.endsWith FILENAME
+  p = path
   try
-    fs.accessSync path
+    fs.accessSync p
+    if not p.endsWith FILENAME
+      p = join path, FILENAME
+      fs.accessSync p
   catch
-    return false
-  true
+    return null
+  p
+
 
 reVerNum = /(\d+)\.(\d+)\.(\d+)\.(\d+)/
 getNewerVersion = (ver1, ver2) ->
@@ -79,7 +86,8 @@ getFlashVersion = (loc) ->
     when '@chrome' then findChromeFlashPath()
     when '@system' then findSystemFlashPath()
     else loc
-  return '' if not validatePath path
+  path = validatePath path
+  return '' if not path
   switch PLATFORM
     when 'darwin'
       # The version info is in the Info.plist inside PepperFlashPlayer.plugin
@@ -105,15 +113,16 @@ getPath = (loc) ->
     switch loc.toLowerCase()
       when '@chrome'
         flashPath = findChromeFlashPath()
-        errMsg = 'Could not load Chrome Pepper Flash Player'
+        errMsg = 'Could not load Chrome integrated Pepper Flash Player plug-in'
       when '@system'
         flashPath = findSystemFlashPath()
-        errMsg = 'Could not load system Pepper Flash Player plug-in'
+        errMsg = 'Could not load Pepper Flash Player system plug-in'
       else
-        flashPath = loc if validatePath loc
+        flashPath = validatePath loc
         errMsg = "Could not load '#{FILENAME}' from: \n#{loc}"
   else
-    errMsg = 'No source has been added. Please call `addSource()` to add the location where Flash Player can be found.'
+    if flashSources.length is 0
+      errMsg = 'No source has been added. Please call `addSource()` to add the location where Flash Player can be found.'
     for src, i in flashSources
       flashPath = getPath src.loc
       usingIndex = i
@@ -131,7 +140,7 @@ load = ->
     # the 'chrome://version', 'chrome://plugins', 'chrome://flash' pages.
     # However, for (most) electron apps, it's useless. It's safe to ignore it.
     ver = getFlashVersion flashPath
-    ver = flashSources[usingIndex].ver if not ver
+    ver = flashSources[usingIndex].ver if usingIndex >= 0 and not ver
     if ver
       log "Pepper Flash Player version: #{ver}"
       app.commandLine.appendSwitch 'ppapi-flash-version', ver
