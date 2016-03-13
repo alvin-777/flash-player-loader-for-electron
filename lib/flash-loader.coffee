@@ -14,6 +14,7 @@ debug = (logFunc, errFunc) ->
     error = console.error.bind console
   error = errFunc if typeof errFunc is 'function'
   log 'Debugging Flash Loader'
+  @
 
 PLATFORM = process.platform
 FILENAME = switch PLATFORM
@@ -107,6 +108,7 @@ addSource = (location, version) ->
     else
       error "Invalid version string for #{location}: #{version}"
   flashSources.push o
+  @
 
 getPath = (loc) ->
   if loc?
@@ -122,7 +124,8 @@ getPath = (loc) ->
         errMsg = "Could not load '#{FILENAME}' from: \n#{loc}"
   else
     if flashSources.length is 0
-      errMsg = 'No source has been added. Please call `addSource()` to add the location where Flash Player can be found.'
+      errMsg = 'No source has been added. Please call `addSource()` \
+                to add the location where Flash Player can be found.'
     for src, i in flashSources
       flashPath = getPath src.loc
       usingIndex = i
@@ -133,7 +136,7 @@ getPath = (loc) ->
 load = ->
   flashPath = getPath()
   if flashPath?
-    log "Loading Pepper Flash Player from: \n#{flashPath}"
+    log "Loading Pepper Flash Player: \n#{flashPath}"
     app.commandLine.appendSwitch 'ppapi-flash-path', flashPath
     # Note: the 'ppapi-flash-version' switch is used by Google Chrome to decide
     # which flash player to load (it'll choose the newest one), and display in
