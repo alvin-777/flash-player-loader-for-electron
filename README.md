@@ -1,17 +1,18 @@
-# flash-player-loader-for-electron
+# Flash Player Loader (for electron apps)
 
-Makes life easier for the electron apps which need the Pepper Flash Player.
+Makes life easier for the [electron](http://electron.atom.io/) apps
+which need the Pepper Flash Player.
 
 ## Installation
 
 ```sh
-npm install --save flash-player-loader-for-electron
+npm install --save flash-player-loader
 ```
 
 ## Usage
 
 ```js
-var flashLoader = require('flash-player-loader-for-electron');
+var flashLoader = require('flash-player-loader');
 var ppapi_flash_path = '/path/to/dir/contains/flash/player/' + flashLoader.getFilename();
 flashLoader.addSource(ppapi_flash_path);
 flashLoader.load();

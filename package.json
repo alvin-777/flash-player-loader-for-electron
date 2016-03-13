@@ -1,5 +1,5 @@
 {
-  "name": "flash-player-loader-for-electron",
+  "name": "flash-player-loader",
   "version": "1.0.0",
   "description": "Makes life easier for the electron apps which need the pepper flash player.",
   "main": "index.js",
