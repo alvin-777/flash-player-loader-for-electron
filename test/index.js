@@ -31,7 +31,7 @@ flashLoader.load();
 app.on('ready', function() {
   mainWindow = new BrowserWindow({
     'width': 416,
-    'height': 380,
+    'height': 425,
     'web-preferences': {'plugins': true}  // Do not forget to add this option
                                           // when creating BrowserWindow
   });
