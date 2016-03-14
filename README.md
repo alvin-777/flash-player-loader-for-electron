@@ -1,7 +1,7 @@
 # Flash Player Loader (for electron apps)
 
 Makes life easier for the [electron](http://electron.atom.io/) apps
-which need the Pepper Flash Player.
+which need the [Pepper Flash Player][1].
 
 ## Installation
 
@@ -9,14 +9,31 @@ which need the Pepper Flash Player.
 npm install --save flash-player-loader
 ```
 
+To run the example app:
+```sh
+cd /path/to/flash-player-loader
+npm install
+npm test
+```
+
 ## Usage
 
 ```js
 var flashLoader = require('flash-player-loader');
-var ppapi_flash_path = '/path/to/dir/contains/flash/player/' + flashLoader.getFilename();
-flashLoader.addSource(ppapi_flash_path);
+var path = '/path/to/dir/contains/flash/player';
+flashLoader.addSource(path);
 flashLoader.load();
 ```
+
+Alternatively, you can chain the methods together.
+```js
+require('flash-player-loader').addSource('/path/to/dir').load();
+```
+
+_**Do not forget to add the `'web-preferences': {'plugins': true}` option
+when creating your BrowserWindow.**_
+
+See `test/index.js` for more detailed example and explanations.
 
 ## API
 
@@ -33,21 +50,23 @@ Adds the location of Pepper Flash Player.
 
 The `location` is the _path to the **directory** contains the Pepper Flash Player file_,
 or the _full path to the Pepper Flash Player file_
-(The filename has to match the string returned by `getFilename()`).  
+(The filename has to match the string returned by `flashLoader.getFilename()`).  
 On **_OS X_**, you can also specify `"@chrome"` or `"@system"` for `location`.   
-If `"@chrome"` is specified, it will automatically look for the Flash Player
+If `"@chrome"` is specified, it will automatically look for the [Pepper Flash Player][1]
 integrated by the newest installed Google Chrome.  
 If `"@system"` is specified, it will look for the
-[Pepper Flash Player system plug-in](https://get.adobe.com/flashplayer/?fpchrome).
+[Pepper Flash Player system plug-in][2] (**PPAPI**).
 
 You can optionally pass in a version string, which will be passed to
 [Chromium](http://www.chromium.org) with the `ppapi-flash-version` switch.  
 _Note:_  
-1)  Google Chrome uses this version number to decide which flash player to load,
+1)  Google Chrome uses this version number to decide which Flash Player to load,
     and for displaying. However, for (most) electron apps, it's useless.
-    *It's safe to ignore it.*  
+    *It's safe to ignore the version string.*  
 2)  On **_OS X_**, the Flash Player version is automatically detected.
     The passed in string is **ignored**.
+
+_This method returns `this`, so it's possible to chain it._
 
 ### `flashLoader.load()`
 
@@ -68,7 +87,9 @@ You can optionally specify a customised log function and error function,
 to make the output format match other output of your app,
 or log the information in other forms (e.g., write to a log file).  
 If only one function is passed in, both `logFunc` and `errFunc` will use it.  
-_(See the test app for instance.)_
+_(See the example app for instance.)_
+
+_This method returns `this`, so it's possible to chain it._
 
 ### `flashLoader.getVersion(location)` _OS X_
 
@@ -76,3 +97,7 @@ _(See the test app for instance.)_
 
 Returns the version of the Flash Player found at the specified location.
 An empty string is returned if the location is invalid.
+
+
+[1]: https://helpx.adobe.com/flash-player/kb/flash-player-google-chrome.html  "Flash Player with Google Chrome"
+[2]: https://get.adobe.com/flashplayer/otherversions/   "Download Pepper Flash Player system plug-in"
