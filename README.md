@@ -1,7 +1,13 @@
 # Flash Player Loader (for electron apps)
 
-Makes life easier for the [electron](http://electron.atom.io/) apps
-which need the [Pepper Flash Player][1].
+Makes life easier for the [electron](http://electron.atom.io/) apps which need the [Pepper Flash Player][1].
+
+The path to the Flash Player for your app usually differs between develop (git) version and release (packed) version.  
+This module manages multiple sources for you, and provides extra debug information and error handling.  
+Plus some handy features (_OS X only_) like automatically locate the Flash Player and get the version of it.
+
+More details can be found at
+[electron docs](https://github.com/atom/electron/blob/master/docs/tutorial/using-pepper-flash-plugin.md).
 
 ## Installation
 
@@ -34,6 +40,22 @@ _**Do not forget to add the `'web-preferences': {'plugins': true}` option
 when creating your BrowserWindow.**_
 
 See `test/index.js` for more detailed example and explanations.
+
+## Get Pepper Flash Player Plug-in
+
+* Install [Google Chrome](https://www.google.com/chrome/browser/desktop/index.html).  
+  You can find the path to the Pepper Flash Player in the `chrome://plugins` tab.
+* Install the _PPAPI_ [system plug-in][2].
+* You can also download and install any older version of the plug-in from
+  [here](https://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html).
+
+## Troubleshooting
+
+##### The path added is correct, but it doesn't load the plug-in
+1.  Please make sure that you are not mixing the architecture of electron and Flash Player.  
+    That is, 32-bit electron will not work with 64-bit Flash Player, and vice versa.
+2.  Please make sure that you have included the option
+    `'web-preferences': {'plugins': true}` when creating BrowserWindow.
 
 ## API
 
