@@ -16,7 +16,7 @@ npm install --save flash-player-loader
 ```
 
 To run the example app:
-```sh
+```
 cd /path/to/flash-player-loader
 npm install
 npm test
@@ -28,6 +28,7 @@ npm test
 var flashLoader = require('flash-player-loader');
 var path = '/path/to/dir/contains/flash/player';
 flashLoader.addSource(path);
+flashLoader.addSource('/alternative/path');
 flashLoader.load();
 ```
 
@@ -46,8 +47,7 @@ See `test/index.js` for more detailed example and explanations.
 * Install [Google Chrome](https://www.google.com/chrome/browser/desktop/index.html).  
   You can find the path to the Pepper Flash Player in the `chrome://plugins` tab.
 * Install the _PPAPI_ [system plug-in][2].
-* You can also download and install any older version of the plug-in from
-  [here](https://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html).
+* You can also download and install any older version of the plug-in from [here][3].
 
 ## Troubleshooting
 
@@ -69,6 +69,10 @@ Returns the Flash Player filename according to the running OS.
 * `version` String (optional)
 
 Adds the location of Pepper Flash Player.
+
+_This method can be called multiple times.
+All added sources will be validated in the order they are added,
+until the first valid one is found._
 
 The `location` is the _path to the **directory** contains the Pepper Flash Player file_,
 or the _full path to the Pepper Flash Player file_
@@ -121,5 +125,6 @@ Returns the version of the Flash Player found at the specified location.
 An empty string is returned if the location is invalid.
 
 
-[1]: https://helpx.adobe.com/flash-player/kb/flash-player-google-chrome.html  "Flash Player with Google Chrome"
-[2]: https://get.adobe.com/flashplayer/otherversions/   "Download Pepper Flash Player system plug-in"
+[1]: https://helpx.adobe.com/flash-player/kb/flash-player-google-chrome.html      "Flash Player with Google Chrome"
+[2]: https://get.adobe.com/flashplayer/otherversions/                             "Download Pepper Flash Player system plug-in"
+[3]: https://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html  "Download archived Pepper Flash Player"
