@@ -62,7 +62,7 @@ findChromeFlashPath = ->
         return null if chromeVersions.length is 0 # Broken Chrome...
         chromeVer = chromeVersions.reduce getNewerVersion
         chromeFlashPath = join chromeVersionsDir, chromeVer,
-          'Google Chrome Framework.framework/Internet Plug-Ins/PepperFlash', FILENAME
+          'Google Chrome Framework.framework/Internet Plug-Ins/PepperFlash'
         fs.accessSync chromeFlashPath
         chromeFlashPath
       catch
@@ -74,7 +74,7 @@ findSystemFlashPath = ->
   switch PLATFORM
     when 'darwin'
       try
-        systemFlashPath = '/Library/Internet Plug-Ins/PepperFlashPlayer/PepperFlashPlayer.plugin'
+        systemFlashPath = '/Library/Internet Plug-Ins/PepperFlashPlayer'
         fs.accessSync systemFlashPath
         systemFlashPath
       catch
