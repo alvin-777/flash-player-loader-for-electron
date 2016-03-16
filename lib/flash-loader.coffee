@@ -120,7 +120,7 @@ getPath = (loc) ->
         flashPath = findSystemFlashPath()
         errMsg = 'Could not load Pepper Flash Player system plug-in'
       else
-        flashPath = validatePath loc
+        flashPath = loc
         errMsg = "Could not load '#{FILENAME}' from: \n#{loc}"
   else
     if flashSources.length is 0
@@ -130,6 +130,7 @@ getPath = (loc) ->
       flashPath = getPath src.loc
       usingIndex = i
       break if flashPath?
+  flashPath = validatePath flashPath
   error errMsg if errMsg? and not flashPath?
   flashPath
 
