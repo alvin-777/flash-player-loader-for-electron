@@ -1,4 +1,5 @@
-{app} = require 'electron'
+electron = require 'electron'
+app = if process.type is 'browser' then electron.app else electron.remote.app
 {join} = require 'path'
 fs = require 'fs'
 
@@ -48,23 +49,35 @@ getNewerVersion = (ver1, ver2) ->
     return if parseInt(v1[i]) > parseInt(v2[i]) then ver1 else ver2
   ver1 # Exactly the same version
 
-findChromeFlashPath = ->
+findChromeFlashPath = (getAll = false) ->
   # Refer to: https://helpx.adobe.com/flash-player/kb/flash-player-google-chrome.html
   switch PLATFORM
     when 'darwin'
+      if getAll
+        paths = []
+        try
+          flashDir = join app.getPath('appData'), 'Google/Chrome/PepperFlash'
+          flashVersions = fs.readdirSync flashDir
+          for ver in flashVersions
+            paths.push(join flashDir, ver)
       try
         # Usually there are 2 directories under the 'Versions' directory,
         # all named after their respective Google Chrome version number.
         # Find the newest version of Google Chrome
         # and use its built-in Pepper Flash Player plugin.
         chromeVersionsDir = '/Applications/Google Chrome.app/Contents/Versions'
+        internalFlashDir = 'Google Chrome Framework.framework/Internet Plug-Ins/PepperFlash'
         chromeVersions = fs.readdirSync chromeVersionsDir
-        return null if chromeVersions.length is 0 # Broken Chrome...
-        chromeVer = chromeVersions.reduce getNewerVersion
-        chromeFlashPath = join chromeVersionsDir, chromeVer,
-          'Google Chrome Framework.framework/Internet Plug-Ins/PepperFlash'
-        fs.accessSync chromeFlashPath
-        chromeFlashPath
+        if not getAll
+          return null if chromeVersions.length is 0 # Broken Chrome...
+          chromeVer = chromeVersions.reduce getNewerVersion
+          chromeFlashPath = join chromeVersionsDir, chromeVer, internalFlashDir
+          fs.accessSync chromeFlashPath
+          chromeFlashPath
+        else
+          for ver in chromeVersions
+            paths.push(join chromeVersionsDir, ver, internalFlashDir)
+          paths.map(validatePath).filter (x) -> x
       catch
         null
     else null
@@ -97,6 +110,10 @@ getFlashVersion = (loc) ->
       match = /<key>CFBundleVersion<\/key>\s*<string>(\d+(?:\.\d+)*)<\/string>/.exec plistContent
       if match and match.length > 1 then match[1] else ''
     else ''
+
+getAllChromeFlashVersions = ->
+  paths = findChromeFlashPath true
+  paths.map (p) -> [getFlashVersion(p), p]
 
 flashSources = []
 usingIndex = -1
@@ -156,3 +173,4 @@ if process.type is 'browser'
 exports.debug = debug
 exports.getFilename = () -> FILENAME
 exports.getVersion = getFlashVersion
+exports.getAllChromeFlashVersions = getAllChromeFlashVersions
