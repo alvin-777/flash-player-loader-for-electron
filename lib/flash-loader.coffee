@@ -113,7 +113,7 @@ getFlashVersion = (loc) ->
 
 getAllChromeFlashVersions = ->
   paths = findChromeFlashPath true
-  paths.map (p) -> [getFlashVersion(p), p]
+  if paths then paths.map (p) -> [getFlashVersion(p), p] else []
 
 flashSources = []
 usingIndex = -1
