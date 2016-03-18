@@ -25,6 +25,12 @@ flashLoader.addSource('@system');
 flashLoader.addSource('@chrome');
 flashLoader.load();
 
+chromeFlashes = flashLoader.getAllChromeFlashVersions();
+if (chromeFlashes.length > 0) {
+  console.log('\nGoogle Chrome has Pepper Flash Players at:'.blue);
+  chromeFlashes.forEach((cf) => console.log('>>'.blue, cf[0].yellow, cf[1].magenta));
+}
+
 // Alternatively, you can chain the methods together.
 // require('..').debug().addSource('@system').addSource('@chrome').load();
 
