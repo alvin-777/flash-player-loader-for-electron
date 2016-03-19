@@ -19,7 +19,11 @@ To run the example app:
 ```
 cd /path/to/flash-player-loader
 npm install
-npm test
+electron test
+```
+To run the example app with extra debug output:
+```
+electron test -d
 ```
 
 ## Usage
@@ -99,20 +103,19 @@ _This method returns `this`, so it's possible to chain it._
 Validates the source(s) added by `addSource()`, in the order they are added.
 The first valid one will be loaded.
 
-### `flashLoader.debug([logFunc[, errFunc]])`
+### `flashLoader.debug([options])`
 
-* `logFunc` Function (optional)
-* `errFunc` Function (optional)
+* `options` Object
+  * `enable` Boolean - Enable/Disable debug mode. Default is `true`.
+  * `log` Function - Customised log function. Default is `console.log`.
+  * `error` Function - Customised error function. Default is `console.error`.
 
-Enable debug mode.
-When enabled, extra information and error messages will be print to the console.
-
-By default it uses `console.log` to log extra information,
-and `console.error` for error messages.  
-You can optionally specify a customised log function and error function,
+Enable or disable debug mode.  
+When enabled, extra information and error messages will be print to the console.  
+You can also specify a customised log/error function,
 to make the output format match other output of your app,
 or log the information in other forms (e.g., write to a log file).  
-If only one function is passed in, both `logFunc` and `errFunc` will use it.  
+_Note you may need to use `bind` to make you log function callable._  
 _(See the example app for instance.)_
 
 _This method returns `this`, so it's possible to chain it._
