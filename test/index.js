@@ -8,12 +8,18 @@ app.on('window-all-closed', function() {
   app.quit();
 });
 
+var enableDebug = process.argv.some((arg) => arg === '-d');
+if (!enableDebug)
+  console.log('[NOTE] Append command line argument "-d" to enable debug mode.'.blue);
+
 // Load the module
 var flashLoader = require('..');
 // Using custom log functions to add extra prefixes and colours.
-flashLoader.debug(
-  console.log.bind(console, '[INFO] %s'.cyan),
-  console.error.bind(console, '[ERROR] %s'.bold.red));
+flashLoader.debug({
+  enable: enableDebug,
+  log:    console.log.bind(console, '[INFO] %s'.cyan),
+  error:  console.error.bind(console, '[ERROR] %s'.bold.red)
+});
 // Try to load Flash Player in the directory 'path_to_this_module/test/' first.
 // To make it work you need to copy the Flash Player to the 'test' directory,
 // or change the path to where your Flash Player file locates.
@@ -26,7 +32,7 @@ flashLoader.addSource('@chrome');
 flashLoader.load();
 
 chromeFlashes = flashLoader.getAllChromeFlashVersions();
-if (chromeFlashes.length > 0) {
+if (enableDebug && chromeFlashes.length > 0) {
   console.log('\nGoogle Chrome has Pepper Flash Players at:'.blue);
   chromeFlashes.forEach((cf) => console.log('>>'.blue, cf[0].yellow, cf[1].magenta));
 }
@@ -37,7 +43,7 @@ if (chromeFlashes.length > 0) {
 app.on('ready', function() {
   mainWindow = new BrowserWindow({
     'width': 416,
-    'height': 425,
+    'height': 400,
     'web-preferences': {'plugins': true}  // Do not forget to add this option
                                           // when creating BrowserWindow
   });

@@ -3,14 +3,24 @@
 <head>
   <meta charset="utf-8">
   <title>Flash Player Detection</title>
+  <style>
+    body {
+      font-family: 'Open Sans',Arial,sans-serif;
+      font-size: small;
+    }
+    a {
+      color: #0095dd;
+      text-decoration: none;
+      font-size: smaller;
+    }
+    a:active, a:focus, a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
   <p>
     If you see clouds moving in the animation below, you have successfully installed Flash Player. Congratulations!
-  </p>
-  <p style="font-size: small">
-    To find out the version of the Flash Player loaded:<br />
-    right click on it => 'About Adobe Flash Player ....'
   </p>
   <div>
     <object type="application/x-shockwave-flash" id="flash_tree" name="flash_tree" align="middle"
@@ -28,5 +38,8 @@
       <param name="allowscriptaccess" value="sameDomain">
     </object>
   </div>
+  <p>
+    <a href="http://www.adobe.com/software/flash/about/" target="_blank">&gt&gt Check Flash Player Version</a>
+  </p>
 </body>
 </html>

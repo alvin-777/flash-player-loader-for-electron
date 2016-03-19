@@ -4,16 +4,26 @@ app = if process.type is 'browser' then electron.app else electron.remote.app
 fs = require 'fs'
 
 doNothing = ->
-log = doNothing
-error = doNothing
+log = error = doNothing
 
-debug = (logFunc, errFunc) ->
+debugOld = (logFunc, errFunc) ->
   if typeof logFunc is 'function'
     log = error = logFunc
   else
     log = console.log.bind console
     error = console.error.bind console
   error = errFunc if typeof errFunc is 'function'
+  log 'Debugging Flash Loader'
+  log '[DEPRECATED] `debug(logFunc, errFunc)` is deprecated. Please call `debug(options)` instead.'
+  @
+debug = (options = {}) ->
+  return debugOld.apply(@, arguments) if typeof options isnt 'object'
+  options.enable ?= true
+  if options.enable
+    log = if options.log? then options.log else console.log.bind console
+    error = if options.error? then options.error else console.error.bind console
+  else
+    log = error = doNothing
   log 'Debugging Flash Loader'
   @
 
