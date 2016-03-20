@@ -128,13 +128,16 @@ getAllChromeFlashVersions = ->
 flashSources = []
 usingIndex = -1
 addSource = (location, version) ->
-  o = loc: location
-  if version?
-    if typeof version is 'string' and reVerNum.test version
-      o.ver = version
-    else
-      error "Invalid version string for #{location}: #{version}"
-  flashSources.push o
+  if location
+    o = loc: location
+    if version?
+      if typeof version is 'string' and reVerNum.test version
+        o.ver = version
+      else
+        error "Invalid version string for #{location}: #{version}"
+    flashSources.push o
+  else
+    error "'#{location}' is not a valid location string!"
   @
 
 getPath = (loc) ->
