@@ -44,8 +44,8 @@ app.on('ready', function() {
   mainWindow = new BrowserWindow({
     'width': 416,
     'height': 400,
-    'web-preferences': {'plugins': true}  // Do not forget to add this option
-                                          // when creating BrowserWindow
+    'webPreferences': {'plugins': true} // Do not forget to add this option
+                                        // when creating BrowserWindow
   });
   var url;
   url = 'file://' + __dirname + '/index.html';
