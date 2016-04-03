@@ -127,8 +127,8 @@ getAllChromeFlashVersions = ->
 
 flashSources = []
 usingIndex = -1
-addSource = (location, version) ->
-  if location
+addSource = (location = '.', version) ->
+  if typeof location is 'string'
     o = loc: location
     if version?
       if typeof version is 'string' and reVerNum.test version
