@@ -1,6 +1,6 @@
 electron = require 'electron'
 app = if process.type is 'browser' then electron.app else electron.remote.app
-{join} = require 'path'
+{join, resolve} = require 'path'
 fs = require 'fs'
 
 doNothing = ->
@@ -167,7 +167,7 @@ getPath = (loc) ->
 load = ->
   flashPath = getPath()
   if flashPath?
-    log "Loading Pepper Flash Player: \n#{flashPath}"
+    log "Loading Pepper Flash Player: \n#{resolve flashPath}"
     app.commandLine.appendSwitch 'ppapi-flash-path', flashPath
     # Note: the 'ppapi-flash-version' switch is used by Google Chrome to decide
     # which flash player to load (it'll choose the newest one), and display in
