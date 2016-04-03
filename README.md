@@ -81,6 +81,7 @@ until the first valid one is found._
 The `location` is the _path to the **directory** contains the Pepper Flash Player file_,
 or the _full path to the Pepper Flash Player file_
 (The filename has to match the string returned by `flashLoader.getFilename()`).  
+If `location` is omitted, `'.'` will be used, i.e., the working directory, where you started your app.  
 On **_OS X_**, you can also specify `"@chrome"` or `"@system"` for `location`.   
 If `"@chrome"` is specified, it will automatically look for the [Pepper Flash Player][1]
 integrated by the newest installed Google Chrome.  
