@@ -94,8 +94,14 @@ findChromeFlashPath = (getAll = false) ->
 
 findSystemFlashPath = ->
   # Download/install from: https://get.adobe.com/flashplayer/otherversions/
-  switch PLATFORM
-    when 'darwin'
+  try
+    # Since Electron v1.2.3, you can get system Flash path in this way
+    systemFlashPath = app.getPath 'pepperFlashSystemPlugin'
+    fs.accessSync systemFlashPath
+    systemFlashPath
+  catch
+    # Backwards compatible
+    if PLATFORM is 'darwin'
       try
         systemFlashPath = '/Library/Internet Plug-Ins/PepperFlashPlayer'
         fs.accessSync systemFlashPath
