@@ -81,12 +81,13 @@ until the first valid one is found._
 The `location` is the _path to the **directory** contains the Pepper Flash Player file_,
 or the _full path to the Pepper Flash Player file_
 (The filename has to match the string returned by `flashLoader.getFilename()`).  
+If you have **electron v1.2.3** or newer, you can also specify `"@system"` for `location`. It will then look for the
+[Pepper Flash Player system plug-in][2] (**PPAPI**).  
 If `location` is omitted, `'.'` will be used, i.e., the working directory, where you started your app.  
-On **_OS X_**, you can also specify `"@chrome"` or `"@system"` for `location`.   
+On **_OS X_**, you can always specify `"@chrome"` or `"@system"` for `location`.   
 If `"@chrome"` is specified, it will automatically look for the [Pepper Flash Player][1]
 integrated by the newest installed Google Chrome.  
-If `"@system"` is specified, it will look for the
-[Pepper Flash Player system plug-in][2] (**PPAPI**).
+`"@system"` works for all versions of electron.
 
 You can optionally pass in a version string, which will be passed to
 [Chromium](http://www.chromium.org) with the `ppapi-flash-version` switch.  
