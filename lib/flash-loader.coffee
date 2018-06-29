@@ -40,7 +40,8 @@ validatePath = (path) ->
   p = path
   try
     fs.accessSync p
-    if not p.endsWith FILENAME
+    stats = fs.statSync p
+    if stats.isDirectory()
       p = join path, FILENAME
       fs.accessSync p
   catch
